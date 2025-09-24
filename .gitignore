@@ -13,6 +13,8 @@ models/
 
 # Generated results (plots, confusion matrix)
 results/
+!results/*.png
+!results/.gitkeep
 
 # OS junk
 .DS_Store

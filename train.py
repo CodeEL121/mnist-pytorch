@@ -5,6 +5,7 @@ os.makedirs("results", exist_ok=True)
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
 import torch 
 import torch.nn as nn
@@ -59,9 +60,10 @@ class CNNModel(nn.Module):
         x = self.features(x)
         x = x.view(x.size(0), -1)
         return self.classifier(x)
-    
+
 # Instantiate
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print("Using device:", device)
 model = CNNModel().to(device)
 
 # Define loss function and optimizer
@@ -118,7 +120,7 @@ for epoch in range(epochs):
 # Save model
 torch.save(best_state, "models/mnist_cnn_best.pth")
 
-# Learning curve and results
+# Learning curves and results
 plt.figure()
 plt.plot(train_losses, label='train')
 plt.plot(val_losses, label='val')
@@ -149,3 +151,9 @@ all_y = torch.cat(all_y).numpy()
 
 cm= confusion_matrix(all_y, all_p)
 print("Confusion matrix: \n", cm)
+
+plt.figure(figsize=(8,6))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
+plt.xlabel("Predicted"); plt.ylabel("True"); plt.title("Confusion Matrix")
+plt.savefig("results/confusion_matrix.png", dpi=150)
+plt.close()
